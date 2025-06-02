@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    // ✅ Runtime + Features
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "jsx": "react-jsx", // safe to leave, even if you're not using JSX
+    "allowJs": true,
+
+    // ✅ Bun-specific bundler mode
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    // ✅ Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+
+    // ✅ Additional (Optional)
+    "resolveJsonModule": true,           // useful if you import JSON files
+    "esModuleInterop": true,             // improves interop with CommonJS
+    "forceConsistentCasingInFileNames": true, // prevents bugs on case-sensitive OS
+    "types": ["node"]                    // ensures Node.js types work properly
+  },
+  "include": ["src/**/*.ts"], // Optional: tell TS which files to include
+  "exclude": ["node_modules"] // Optional: avoid unnecessary checks
+}

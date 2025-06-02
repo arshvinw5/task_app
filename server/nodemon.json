@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "ts",
+  "exec": "bun --no-cache src/index.ts",
+  "legacyWatch": true
+}
