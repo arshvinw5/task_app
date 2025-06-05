@@ -4,6 +4,7 @@ import { users, type NewUser } from "../db/schema";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { auth, type AuthRequest } from "../middleware/auth";
 
 const authRouter = Router();
 
@@ -156,8 +157,27 @@ authRouter.post("/tokenIsValid", async (req, res) => {
   }
 });
 
-authRouter.get("/", (req, res) => {
-  res.send("Hey there, this is from auth router");
+//combined auth middleware to this router
+//to trigger the auth middleware for check user authentication
+authRouter.get("/", auth, async (req: AuthRequest, res) => {
+  try {
+    //req.user = verfiedToke.id; ro get the id
+    if (!req.user) {
+      res.status(400).json({ msg: "User not found" });
+      return;
+    }
+
+    //fetch the user from db by matching users.id === req.user
+    const [user] = await db.select().from(users).where(eq(users.id, req.user));
+
+    //out user info
+    res.json({ ...user, token: req.token });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 });
+
+//route specific middleware
+//user to login to get this perticller user information
 
 export default authRouter;

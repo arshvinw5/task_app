@@ -4,6 +4,7 @@ import authRouter from "./routes/auth";
 const app = express();
 
 //take a look at the all the incoming request then only pass the json relaoted routes as middleware
+//global middleware
 app.use(express.json());
 
 //buinding the auth route to index as middleware
