@@ -163,7 +163,7 @@ authRouter.get("/", auth, async (req: AuthRequest, res) => {
   try {
     //req.user = verfiedToke.id; ro get the id
     if (!req.user) {
-      res.status(400).json({ msg: "User not found" });
+      res.status(400).json({ error: "User not found" });
       return;
     }
 

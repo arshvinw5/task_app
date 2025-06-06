@@ -20,7 +20,7 @@ export const auth = async (
 
     if (!token) {
       //401 means unathorized
-      res.status(401).json({ msg: "No auth token, authorization denied" });
+      res.status(401).json({ error: "No auth token, authorization denied" });
       return;
     }
     //if the token is not sent we return false
@@ -28,7 +28,7 @@ export const auth = async (
     const verfied = jwt.verify(token, process.env.JWT_SECRET as string);
 
     if (!verfied) {
-      res.status(401).json({ msg: "Token verification failed" });
+      res.status(401).json({ error: "Token verification failed" });
       return;
     }
     //then to verfy the token is valid or not
@@ -44,7 +44,7 @@ export const auth = async (
       .where(eq(users.id, verfiedToke.id));
 
     if (!user) {
-      res.status(401).json({ msg: "User not found" });
+      res.status(401).json({ error: "User not found" });
       return;
     }
 
@@ -53,8 +53,7 @@ export const auth = async (
 
     next();
     //if no user we return false
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
-    res.status(500).json(false);
+    res.status(500).json({ error: e });
   }
 };
