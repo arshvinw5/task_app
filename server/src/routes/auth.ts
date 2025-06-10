@@ -125,6 +125,7 @@ authRouter.post("/tokenIsValid", async (req, res) => {
     }
     //if the token is not sent we return false
 
+    //verfy the token
     const verfied = jwt.verify(token, process.env.JWT_SECRET as string);
 
     if (!verfied) {

@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:task_app/core/constants/constants.dart';
 import 'package:task_app/core/services/sp_service.dart';
+import 'package:task_app/features/auth/repository/auth_local_repository.dart';
 import 'package:task_app/models/user_model.dart';
 
 class AuthRemoteRepository {
   final SpService spService = SpService();
+  final AuthLocalRepository authLocalRepository = AuthLocalRepository();
   Future<UserModel> registor({
     required String name,
     required String email,
@@ -90,7 +92,8 @@ class AuthRemoteRepository {
       }
       return UserModel.fromMap(jsonDecode(userResponse.body));
     } catch (e) {
-      return null;
+      final user = await authLocalRepository.getUser();
+      return user;
     }
   }
 }

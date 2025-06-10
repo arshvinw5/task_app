@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    //to get that user data from backend
     context.read<AuthCubit>().getUserData();
   }
 
@@ -33,6 +34,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Task App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: "Cera Pro",
         useMaterial3: true,
         inputDecorationTheme: InputDecorationTheme(
           contentPadding: const EdgeInsets.all(18),
@@ -54,6 +56,12 @@ class _MyAppState extends State<MyApp> {
           ),
           labelStyle: const TextStyle(color: Colors.black),
           errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 12.5),
+        ),
+        iconButtonTheme: IconButtonThemeData(
+          style: IconButton.styleFrom(
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white,
+          ),
         ),
       ),
       home: BlocBuilder<AuthCubit, AuthState>(

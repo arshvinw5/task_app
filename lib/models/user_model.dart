@@ -51,9 +51,8 @@ class UserModel {
       'name': name,
       'email': email,
       'password': password,
-      'confirmPassword': confirmPassword,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
       'token': token,
     };
   }
