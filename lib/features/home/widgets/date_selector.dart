@@ -12,6 +12,8 @@ class DateSelector extends StatefulWidget {
 
 class _DateSelectorState extends State<DateSelector> {
   int weekOffSet = 0;
+  DateTime selctedDate = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     final weekDates = generateWeekDates(weekOffSet);
@@ -57,34 +59,48 @@ class _DateSelectorState extends State<DateSelector> {
               scrollDirection: Axis.horizontal,
               itemCount: weekDates.length,
               itemBuilder: (context, index) {
-                return Container(
-                  width: 70,
-                  margin: const EdgeInsets.only(right: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade100, width: 2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '25',
-                        style: TextStyle(
-                          fontSize: 26,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                final date = weekDates[index];
+                bool isSelected =
+                    DateFormat('d').format(selctedDate) ==
+                        DateFormat('d').format(date) &&
+                    selctedDate.month == date.month &&
+                    selctedDate.year == date.year;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selctedDate = date;
+                    });
+                  },
+                  child: Container(
+                    width: 70,
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.deepOrangeAccent : null,
+                      border: Border.all(color: Colors.grey.shade100, width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          DateFormat('d').format(date),
+                          style: TextStyle(
+                            fontSize: 26,
+                            color: isSelected ? Colors.black : Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        'Mon',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 5),
+                        Text(
+                          DateFormat('E').format(date),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: isSelected ? Colors.black : Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

@@ -15,3 +15,17 @@ List<DateTime> generateWeekDates(int weekOffSet) {
 
   return List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
 }
+
+//rgb -> hex
+String rgbToHex(Color color) {
+  return '#${color.red.toRadixString(16).padLeft(2, '0')}${color.green.toRadixString(16).padLeft(2, '0')}${color.blue.toRadixString(16).padLeft(2, '0')}';
+}
+
+//hex-> rgb
+Color hexToColor(String hex) {
+  hex = hex.replaceAll('#', ''); // remove leading #
+  if (hex.length == 6) {
+    hex = 'FF$hex'; // add opacity if not provided
+  }
+  return Color(int.parse(hex, radix: 16));
+}

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_app/features/auth/cubit/auth_cubit.dart';
+import 'package:task_app/features/home/cubit/tasks_cubit.dart';
 import 'package:task_app/features/home/screens/home_screen.dart';
 import 'package:task_app/screens/auth/screen/auth_switch.dart';
 
 void main() {
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => AuthCubit())],
+      providers: [
+        BlocProvider(create: (context) => AuthCubit()),
+        BlocProvider(create: (context) => TaskCubit()),
+      ],
       child: MyApp(),
     ),
   );
@@ -34,6 +38,25 @@ class _MyAppState extends State<MyApp> {
       title: 'Task App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.black,
+          centerTitle: true,
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        textTheme: TextTheme(
+          titleLarge: const TextStyle(color: Colors.white),
+          titleMedium: const TextStyle(color: Colors.white),
+          titleSmall: const TextStyle(color: Colors.white),
+          bodyLarge: const TextStyle(color: Colors.white),
+          bodyMedium: const TextStyle(color: Colors.white),
+          bodySmall: const TextStyle(color: Colors.white),
+        ),
         fontFamily: "Cera Pro",
         useMaterial3: true,
         inputDecorationTheme: InputDecorationTheme(
@@ -48,7 +71,7 @@ class _MyAppState extends State<MyApp> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.black, width: 3),
+            borderSide: const BorderSide(color: Colors.white, width: 3),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -57,10 +80,14 @@ class _MyAppState extends State<MyApp> {
           labelStyle: const TextStyle(color: Colors.black),
           errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 12.5),
         ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+        ),
         iconButtonTheme: IconButtonThemeData(
           style: IconButton.styleFrom(
-            foregroundColor: Colors.black,
-            backgroundColor: Colors.white,
+            foregroundColor: Colors.white,
+            //backgroundColor: Colors.white,
           ),
         ),
       ),

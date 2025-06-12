@@ -19,7 +19,10 @@ class ReuseableTextFelid extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
-      decoration: InputDecoration(labelText: labelText),
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: const TextStyle(color: Colors.white),
+      ),
       validator: validator,
     );
   }
