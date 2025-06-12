@@ -20,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DateTime selctedDate = DateTime.now();
+
   @override
   void initState() {
     super.initState();
@@ -57,10 +59,26 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           if (state is getTasksSuccess) {
-            final taskList = state.taskList;
+            final taskList =
+                state.taskList
+                    .where(
+                      (elem) =>
+                          DateFormat('d').format(elem.dueAt) ==
+                              DateFormat('d').format(selctedDate) &&
+                          selctedDate.month == elem.dueAt.month &&
+                          selctedDate.year == elem.dueAt.year,
+                    )
+                    .toList();
             return Column(
               children: [
-                DateSelector(),
+                DateSelector(
+                  selctedDate: selctedDate,
+                  onTap: (date) {
+                    setState(() {
+                      selctedDate = date;
+                    });
+                  },
+                ),
                 const SizedBox(height: 20.0),
                 Expanded(
                   child: ListView.builder(

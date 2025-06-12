@@ -4,7 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:task_app/core/constants/utils.dart';
 
 class DateSelector extends StatefulWidget {
-  const DateSelector({Key? key}) : super(key: key);
+  final DateTime selctedDate;
+  final Function(DateTime) onTap;
+  const DateSelector({
+    super.key,
+    required this.selctedDate,
+    required this.onTap,
+  });
 
   @override
   _DateSelectorState createState() => _DateSelectorState();
@@ -12,8 +18,6 @@ class DateSelector extends StatefulWidget {
 
 class _DateSelectorState extends State<DateSelector> {
   int weekOffSet = 0;
-  DateTime selctedDate = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     final weekDates = generateWeekDates(weekOffSet);
@@ -61,16 +65,12 @@ class _DateSelectorState extends State<DateSelector> {
               itemBuilder: (context, index) {
                 final date = weekDates[index];
                 bool isSelected =
-                    DateFormat('d').format(selctedDate) ==
+                    DateFormat('d').format(widget.selctedDate) ==
                         DateFormat('d').format(date) &&
-                    selctedDate.month == date.month &&
-                    selctedDate.year == date.year;
+                    widget.selctedDate.month == date.month &&
+                    widget.selctedDate.year == date.year;
                 return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selctedDate = date;
-                    });
-                  },
+                  onTap: () => widget.onTap(date),
                   child: Container(
                     width: 70,
                     margin: const EdgeInsets.only(right: 8),
