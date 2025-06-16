@@ -59,6 +59,7 @@ class AuthRemoteRepository {
 
       return UserModel.fromMap(jsonDecode(res.body));
     } catch (e) {
+      print(e.toString());
       throw e.toString();
     }
   }

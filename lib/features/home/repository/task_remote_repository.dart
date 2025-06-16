@@ -2,9 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:task_app/core/constants/constants.dart';
+import 'package:task_app/core/constants/utils.dart';
+import 'package:task_app/features/home/repository/task_local_repository.dart';
 import 'package:task_app/models/task_model.dart';
+import 'package:uuid/uuid.dart';
 
 class TaskRemoteRepository {
+  //to get all the task from locl db
+  final TaskLocalRepository taskLocalRepository = TaskLocalRepository();
   //save task in db
   Future<TaskModel> createTask({
     required String title,
@@ -12,6 +17,7 @@ class TaskRemoteRepository {
     required String hexColor,
     required String token,
     required DateTime dueAt,
+    required String uId,
   }) async {
     try {
       final res = await http.post(
@@ -32,6 +38,27 @@ class TaskRemoteRepository {
 
       return TaskModel.fromMap(jsonDecode(res.body));
     } catch (e) {
+      //store the date in same sql db
+      //creating a uid since it is a local db
+      // try {
+      //   final taskModel = TaskModel(
+      //     id: const Uuid().v6(),
+      //     uId: uId,
+      //     title: title,
+      //     description: description,
+      //     hexColor: hexToColor(hexColor),
+      //     dueAt: dueAt,
+      //     createdAt: DateTime.now(),
+      //     updatedAt: DateTime.now(),
+      //     isSynced: 0,
+      //   );
+      //   await taskLocalRepository.insertTask(taskModel);
+
+      //   return taskModel;
+      // } catch (e) {
+      //   rethrow;
+      // }
+
       rethrow;
     }
   }
@@ -52,14 +79,22 @@ class TaskRemoteRepository {
       final listTask = jsonDecode(res.body);
       List<TaskModel> taskList = [];
 
-      print(listTask);
-
       for (var task in listTask) {
         taskList.add(TaskModel.fromMap(task));
       }
 
+      await taskLocalRepository.insertTasks(taskList);
+
       return taskList;
     } catch (e) {
+      final tasks = await taskLocalRepository.getTask();
+
+      if (tasks.isNotEmpty) {
+        return tasks;
+      }
+
+      //throw e = rethrow
+
       rethrow;
     }
   }

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:task_app/components/auth_button.dart';
 import 'package:task_app/features/auth/cubit/auth_cubit.dart';
 import 'package:task_app/features/home/cubit/tasks_cubit.dart';
+import 'package:task_app/features/home/screens/home_screen.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   static MaterialPageRoute route() =>
@@ -31,6 +32,7 @@ class _NewTaskScreenState extends State<AddNewTaskScreen> {
       AuthLoggedIn user = context.read<AuthCubit>().state as AuthLoggedIn;
 
       await context.read<TaskCubit>().createTask(
+        uId: user.user.id,
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
         color: selectedColor,
@@ -63,8 +65,24 @@ class _NewTaskScreenState extends State<AddNewTaskScreen> {
               const SnackBar(content: Text('Task Created Successfully')),
             );
 
+            //the reason why init state in home screen didn't work
+            //Navigator.pop(context);
+            //that's pop back to home screenn and it didn't tryigger the init state fucntion
+            //to fetch all the task from backend
+
             //to return back to Home screen
-            Navigator.pop(context, true);
+            //It pushes HomeScreen to the top and removes
+            //all previous screens from the stack. So now the stack
+            Navigator.pushAndRemoveUntil(
+              context,
+              HomeScreen.route(),
+              (_) => false,
+            );
+
+            //A predicate is just a function that
+            //returns a boolean (true or false). In this
+            //context, it tells Flutter which routes to keep in
+            //the navigation stack.
           }
         },
         builder: (context, state) {

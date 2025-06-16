@@ -26,8 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     //fetch the user to get the token
-    final user = context.read<AuthCubit>().state as AuthLoggedIn;
-    context.read<TaskCubit>().fetchAllTasks(token: user.user.token);
+    // final user = context.read<AuthCubit>().state as AuthLoggedIn;
+    // context.read<TaskCubit>().fetchAllTasks(token: user.user.token);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = context.read<AuthCubit>().state as AuthLoggedIn;
+      context.read<TaskCubit>().fetchAllTasks(token: user.user.token);
+    });
   }
 
   @override
@@ -35,14 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            AddNewTaskScreen.route(),
-          );
-          if (result == true) {
-            final user = context.read<AuthCubit>().state as AuthLoggedIn;
-            context.read<TaskCubit>().fetchAllTasks(token: user.user.token);
-          }
+          await Navigator.push(context, AddNewTaskScreen.route());
         },
 
         child: Icon(Icons.add),

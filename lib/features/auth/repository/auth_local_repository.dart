@@ -26,7 +26,25 @@ class AuthLocalRepository {
     final path = join(dbPath, "auth.db");
     return openDatabase(
       path,
-      version: 1,
+      version: 3,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < newVersion) {
+          // Create the new table
+          await db.execute('DROP TABLE $tableName');
+          await db.execute('''
+            CREATE TABLE $tableName (
+              id TEXT PRIMARY KEY,
+              name TEXT NOT NULL,
+              email TEXT NOT NULL,
+              token TEXT NOT NULL,
+              password TEXT NOT NULL,
+              confirmPassword TEXT NOT NULL,
+              createdAt TEXT NOT NULL,
+              updatedAt TEXT NOT NULL
+            )
+          ''');
+        }
+      },
       //once the db is created
       onCreate: (db, version) async {
         //need to add table
@@ -37,8 +55,8 @@ class AuthLocalRepository {
           token TEXT NOT NULL,
           password TEXT NOT NULL,
           confirmPassword TEXT NOT NULL,
-          createdAt INTEGER NOT NULL,
-          updatedAt INTEGER NOT NULL
+          createdAt TEXT NOT NULL,
+          updatedAt TEXT NOT NULL
         )''');
       },
     );
