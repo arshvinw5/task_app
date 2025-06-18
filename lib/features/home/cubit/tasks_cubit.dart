@@ -98,4 +98,33 @@ class TaskCubit extends Cubit<TaskState> {
       emit(TaskError(e.toString()));
     }
   }
+
+  //to fetch all the unsynced tasks
+  Future<void> unsyncedTasks(String token) async {
+    //when is the app is on WiFi, fetch all unsynced tasks from the local database
+
+    final unsynckedTaks = await taskLocalRepository.getUnsyncedTasks();
+
+    print("Unsynced Tasks: $unsynckedTaks");
+
+    if (unsynckedTaks.isEmpty) {
+      print("No unsynced tasks found");
+      return;
+    }
+
+    //connect this to postgresssql database to add those taks
+
+    final isSynced = await taskRemoteRepository.syncTask(
+      token: token,
+      tasks: unsynckedTaks,
+    );
+
+    if (isSynced) {
+      print("Tasks synced successfully");
+      for (final task in unsynckedTaks) {
+        //update the isSynced value to 1
+        await taskLocalRepository.updateRowValue(task.id, 1);
+      }
+    }
+  }
 }

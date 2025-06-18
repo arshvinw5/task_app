@@ -88,6 +88,39 @@ taskRouter.delete("/delete", auth, async (req: AuthRequest, res) => {
   }
 });
 
+//update the db with unsynced tasks
+taskRouter.post("/sync", auth, async (req: AuthRequest, res) => {
+  try {
+    //get the unsynced tasks from the request body
+
+    const tasksList = req.body;
+
+    const filteredTasks: NewTask[] = [];
+
+    for (let task of tasksList) {
+      // date = new date object
+      task = {
+        ...task,
+        dueAt: new Date(task.dueAt),
+        createdAt: new Date(task.createdAt),
+        updatedAt: new Date(task.updatedAt),
+        uId: req.user,
+      };
+
+      filteredTasks.push(task);
+    }
+
+    const pushTask = await db.insert(tasks).values(filteredTasks).returning();
+
+    console.log("Received tasks for sync:", tasksList);
+
+    res.status(201).json(pushTask);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
+});
+
 export default taskRouter;
 
 /**This line uses array destructuring, which means you're extracting only the first item from the array returned by the query. So:
@@ -96,3 +129,8 @@ const [allTask] means: "Give me just the first task from the array of results."
 As a result, res.json(allTask) sends only one task (the first one) as the response.
 
 **/
+
+//this is a string from the flutter app this value cannot be used directly in the db
+// Received tasks for sync: [ "{\"id\":\"1f04ae86-f96d-6770-b9dc-e99c60b656f5\",\"uId\":\"06b08d23-4f81-4772-a03c-1bff353fb721\",\"title\":\"Testing this in offline\",\"description\":\"Testing this in offline\",\"hexColor\":\"#18ffff\",\"dueAt\":\"2025-06-17T01:00:24.514294\",\"createdAt\":\"2025-06-17T01:01:01.377976\",\"updatedAt\":\"2025-06-17T01:01:01.378010\",\"isSynced\":0}",
+// mytask_backend      |   "{\"id\":\"1f04baca-0f0a-6930-975d-ddf7b83b6c4a\",\"uId\":\"06b08d23-4f81-4772-a03c-1bff353fb721\",\"title\":\"Tesing this offline\",\"description\":\"Tesing this offline\",\"hexColor\":\"#b388ff\",\"dueAt\":\"2025-06-18T00:24:58.767546\",\"createdAt\":\"2025-06-18T00:25:25.535431\",\"updatedAt\":\"2025-06-18T00:25:25.535466\",\"isSynced\":0}"
+// mytask_backend      | ]

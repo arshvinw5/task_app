@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:task_app/core/constants/constants.dart';
-import 'package:task_app/core/constants/utils.dart';
+//import 'package:task_app/core/constants/utils.dart';
 import 'package:task_app/features/home/repository/task_local_repository.dart';
 import 'package:task_app/models/task_model.dart';
-import 'package:uuid/uuid.dart';
+//import 'package:uuid/uuid.dart';
 
 class TaskRemoteRepository {
   //to get all the task from locl db
@@ -96,6 +96,38 @@ class TaskRemoteRepository {
       //throw e = rethrow
 
       rethrow;
+    }
+  }
+
+  //to update unsynced tasks
+  Future<bool> syncTask({
+    required String token,
+    required List<TaskModel> tasks,
+  }) async {
+    try {
+      final taskListInMap = [];
+
+      for (final task in tasks) {
+        // Convert each TaskModel to a map
+        // because the API expects a list of maps
+        taskListInMap.add(task.toMap());
+      }
+
+      final res = await http.post(
+        Uri.parse('${Constants.bankendUri}/tasks/sync'),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+        body: jsonEncode(taskListInMap),
+      );
+
+      if (res.statusCode != 201) {
+        //conver this to map then pass the error message
+        throw jsonDecode(res.body)['error'];
+      }
+
+      return true;
+    } catch (e) {
+      print('Error in syncTask: $e');
+      return false;
     }
   }
 }

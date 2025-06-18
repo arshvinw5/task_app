@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,12 +27,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     //fetch the user to get the token
-    // final user = context.read<AuthCubit>().state as AuthLoggedIn;
+    final user = context.read<AuthCubit>().state as AuthLoggedIn;
     // context.read<TaskCubit>().fetchAllTasks(token: user.user.token);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = context.read<AuthCubit>().state as AuthLoggedIn;
       context.read<TaskCubit>().fetchAllTasks(token: user.user.token);
+    });
+
+    Connectivity().onConnectivityChanged.listen((data) async {
+      if (data.contains(ConnectivityResult.wifi)) {
+        //print('We are on WiFi');
+
+        // ignore: use_build_context_synchronously
+        await context.read<TaskCubit>().unsyncedTasks(user.user.token);
+      }
     });
   }
 
